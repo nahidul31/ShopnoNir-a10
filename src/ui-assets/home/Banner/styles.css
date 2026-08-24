@@ -1,0 +1,108 @@
+.banner-container {
+  width: 100%;
+  height: 600px;
+  position: relative;
+}
+
+.mySwiper {
+  width: 100%;
+  height: 100%;
+}
+
+.banner-slide {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  overflow: hidden;
+}
+
+.banner-image {
+  object-fit: cover;
+  z-index: 1;
+}
+
+/* Blackish gradient */
+.banner-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.75) 0%,
+    rgba(0, 0, 0, 0.45) 45%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+}
+
+/* Text */
+.banner-content {
+  position: absolute;
+  z-index: 3;
+
+  top: 50%;
+  left: 8%;
+
+  transform: translateY(-50%);
+
+  max-width: 600px;
+
+  color: white;
+}
+
+.banner-content h1 {
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+
+.banner-content p {
+  font-size: 19px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  color: #f1f1f1;
+}
+
+/* .banner-content button {
+  background: #2563eb;
+  color: white;
+
+  padding: 13px 28px;
+
+  border: none;
+  border-radius: 8px;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+} */
+
+/* .banner-content button:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+} */
+
+/* Mobile */
+@media (max-width: 768px) {
+  .banner-container,
+  .banner-slide {
+    height: 450px;
+  }
+
+  .banner-content {
+    left: 6%;
+    right: 6%;
+  }
+
+  .banner-content h1 {
+    font-size: 34px;
+  }
+
+  .banner-content p {
+    font-size: 16px;
+  }
+}
