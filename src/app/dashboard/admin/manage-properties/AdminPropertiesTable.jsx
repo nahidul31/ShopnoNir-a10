@@ -1,6 +1,10 @@
 import { Chip } from "@heroui/react";
 import Link from "next/link";
 import StatusSelect from "./StatusSelect";
+import RejectPropertyModal from "@/ui-assets/admin/RejectPropertyModal";
+// import EditPropertyModal from "@/ui-assets/admin/EditPropertyModal";
+import DeletePropertyModal from "@/ui-assets/admin/DeletePropertyModal";
+import EditPropertyModal from "@/ui-assets/owner-property/EditPropertyModal";
 
 const statusColorMap = {
   pending: "warning",
@@ -73,7 +77,7 @@ export default function AdminPropertiesTable({ properties }) {
                   href={`/all-properties/${property._id}`}
                   className="block group"
                 >
-                  <p className="font-medium text-default-800 group-hover:text-primary-600 transition-colors">
+                  <p className="font-medium text-default-800 group-hover:text-[#A61C3C] transition-colors">
                     {property.title}
                   </p>
                   <p className="text-xs text-default-400 line-clamp-1 max-w-[200px]">
@@ -123,15 +127,24 @@ export default function AdminPropertiesTable({ properties }) {
 
               {/* ACTIONS */}
               <td className="px-4 py-3">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                   <StatusSelect
                     propertyId={property._id}
                     currentStatus={property.status}
                   />
 
+                  {/* Reject with feedback */}
+                  <RejectPropertyModal property={property} />
+
+                  {/* Update */}
+                  <EditPropertyModal property={property} />
+
+                  {/* Delete */}
+                  <DeletePropertyModal property={property} />
+
                   <Link
                     href={`/all-properties/${property._id}`}
-                    className="text-primary-600 hover:text-primary-700 text-xs font-medium whitespace-nowrap hover:underline"
+                    className="text-[#A61C3C] hover:text-[#8C1C2B] text-xs font-medium whitespace-nowrap hover:underline"
                   >
                     View
                   </Link>

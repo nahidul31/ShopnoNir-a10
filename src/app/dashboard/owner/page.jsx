@@ -1,7 +1,13 @@
-import React from "react";
+import { getServerSession } from "@/lib/action/get-server-session";
+import OwnerAnalytics from "@/ui-assets/dashboard/OwnerAnalytics";
 
-const ownerPage = () => {
-  return <div>i am a owener broo vai</div>;
-};
+export default async function OwnerDashboardPage() {
+  const session = await getServerSession();
+  const user = session?.user || null;
 
-export default ownerPage;
+  return (
+    <div className="p-6 sm:p-8">
+      <OwnerAnalytics user={user} />;
+    </div>
+  );
+}

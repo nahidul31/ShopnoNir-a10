@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@iconify/react";
-import { Button, Input } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { authClient } from "@/lib/auth-client";
 
 export default function SigninForm() {
@@ -50,12 +50,8 @@ export default function SigninForm() {
         return;
       }
 
-      console.log("Signin successful:", data);
-
-      // Reset form
       setFormData({ email: "", password: "" });
 
-      // Go to the home/dashboard page
       router.push("/");
       router.refresh();
     } catch (error) {
@@ -76,18 +72,6 @@ export default function SigninForm() {
       console.error("Google signin error:", error);
       setFormError("Google sign-in failed. Please try again.");
     }
-  };
-
-  const inputClassNames = {
-    label: "text-gray-700 font-medium",
-    inputWrapper: [
-      "px-4",
-      "h-14",
-      "border-2",
-      "data-[hover=true]:border-[#C93B5B]/50",
-      "group-data-[focus=true]:border-[#C93B5B]",
-    ],
-    input: "text-sm py-0",
   };
 
   return (
@@ -189,7 +173,7 @@ export default function SigninForm() {
             </div>
 
             <p className="text-sm text-gray-500">
-              © {new Date().getFullYear()} HomeNest. All rights reserved.
+              © {new Date().getFullYear()} ShopnoNir. All rights reserved.
             </p>
           </div>
         </div>
@@ -210,8 +194,8 @@ export default function SigninForm() {
                   />
                 </div>
                 <span className="text-2xl font-extrabold">
-                  <span className="text-gray-900">Home</span>
-                  <span className="text-[#C93B5B]">Nest</span>
+                  <span className="text-gray-900">Shopno</span>
+                  <span className="text-[#C93B5B]">Nir</span>
                 </span>
               </Link>
             </div>
@@ -222,7 +206,7 @@ export default function SigninForm() {
                 Sign in to your account
               </h2>
               <p className="mt-2 text-sm leading-6 text-gray-500">
-                Enter your details below to continue to HomeNest.
+                Enter your details below to continue to ShopnoNir.
               </p>
             </div>
 
@@ -231,52 +215,48 @@ export default function SigninForm() {
             ================================================== */}
             <form onSubmit={handleSubmit} className="mt-8 space-y-6">
               {/* Email */}
-              <Input
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                label="Email Address"
-                placeholder="Enter your email"
-                variant="bordered"
-                radius="lg"
-                size="lg"
-                isRequired
-                classNames={inputClassNames}
-                startContent={
-                  <Icon
-                    icon="solar:letter-bold"
-                    width="20"
-                    className="text-gray-400 shrink-0"
+              <div>
+                <label className="mb-2 block text-sm font-medium text-gray-700">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <Icon icon="solar:letter-bold" width="20" />
+                  </span>
+                  <input
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Enter your email"
+                    required
+                    className="h-14 w-full rounded-lg border-2 border-gray-200 pl-12 pr-4 text-sm outline-none transition-colors hover:border-[#C93B5B]/50 focus:border-[#C93B5B]"
                   />
-                }
-              />
+                </div>
+              </div>
 
               {/* Password */}
-              <Input
-                name="password"
-                type={showPassword ? "text" : "password"}
-                value={formData.password}
-                onChange={handleChange}
-                label="Password"
-                placeholder="Enter your password"
-                variant="bordered"
-                radius="lg"
-                size="lg"
-                isRequired
-                classNames={inputClassNames}
-                startContent={
-                  <Icon
-                    icon="solar:lock-password-bold"
-                    width="20"
-                    className="text-gray-400 shrink-0"
+              <div>
+                <label className="mb-2 block text-sm font-medium text-gray-700">
+                  Password <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <Icon icon="solar:lock-password-bold" width="20" />
+                  </span>
+                  <input
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Enter your password"
+                    required
+                    className="h-14 w-full rounded-lg border-2 border-gray-200 pl-12 pr-12 text-sm outline-none transition-colors hover:border-[#C93B5B]/50 focus:border-[#C93B5B]"
                   />
-                }
-                endContent={
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="cursor-pointer text-gray-400 transition-colors hover:text-[#C93B5B]"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 transition-colors hover:text-[#C93B5B]"
                   >
                     <Icon
                       icon={
@@ -287,8 +267,8 @@ export default function SigninForm() {
                       width="20"
                     />
                   </button>
-                }
-              />
+                </div>
+              </div>
 
               {/* Error */}
               {formError && (
@@ -322,7 +302,6 @@ export default function SigninForm() {
                 radius="lg"
                 isDisabled={isSubmitting}
                 className="w-full bg-[#C93B5B] font-bold text-white shadow-lg shadow-[#C93B5B]/20 transition-all duration-300 hover:bg-[#B33250]"
-                endContent={<Icon icon="solar:arrow-right-bold" width="20" />}
               >
                 {isSubmitting ? "Signing in..." : "Sign In"}
               </Button>
@@ -340,13 +319,13 @@ export default function SigninForm() {
             {/* Google Sign In */}
             <Button
               type="button"
-              onClick={handleGoogleSignIn}
+              onPress={handleGoogleSignIn}
               size="lg"
               radius="lg"
               variant="bordered"
               className="w-full border-2 border-gray-200 font-semibold text-gray-700 transition-all duration-200 hover:border-gray-300 hover:bg-gray-50"
-              startContent={<Icon icon="flat-color-icons:google" width="20" />}
             >
+              <Icon icon="flat-color-icons:google" width="20" />
               Continue with Google
             </Button>
 

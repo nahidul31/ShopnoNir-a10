@@ -6,46 +6,26 @@ import { Button, Input } from "@heroui/react";
 
 const quickLinks = [
   { name: "Home", href: "/" },
-  { name: "Properties", href: "/properties" },
-  { name: "About Us", href: "/about" },
-  { name: "Contact Us", href: "/contact" },
-  { name: "FAQ", href: "/faq" },
+  { name: "All Properties", href: "/all-properties" },
+  { name: "Dashboard", href: "/dashboard" },
+  { name: "Log in", href: "/login" },
+  { name: "Register", href: "/register" },
 ];
 
 const propertyLinks = [
-  { name: "Apartments", href: "/properties?type=apartment" },
-  { name: "Houses", href: "/properties?type=house" },
-  { name: "Office Spaces", href: "/properties?type=office" },
-  { name: "Featured Properties", href: "/properties?featured=true" },
-  { name: "Latest Listings", href: "/properties?sort=latest" },
+  { name: "Apartments", href: "/all-properties?propertyType=apartment" },
+  { name: "Houses", href: "/all-properties?propertyType=house" },
+  { name: "Villas", href: "/all-properties?propertyType=villa" },
+  { name: "Rooms", href: "/all-properties?propertyType=room" },
+  { name: "Office Spaces", href: "/all-properties?propertyType=office" },
 ];
 
 const socialLinks = [
-  {
-    name: "Facebook",
-    href: "#",
-    icon: "ri:facebook-fill",
-  },
-  {
-    name: "Instagram",
-    href: "#",
-    icon: "ri:instagram-line",
-  },
-  {
-    name: "X",
-    href: "#",
-    icon: "ri:twitter-x-line",
-  },
-  {
-    name: "LinkedIn",
-    href: "#",
-    icon: "ri:linkedin-fill",
-  },
-  {
-    name: "YouTube",
-    href: "#",
-    icon: "ri:youtube-fill",
-  },
+  { name: "Facebook", href: "#", icon: "ri:facebook-fill" },
+  { name: "Instagram", href: "#", icon: "ri:instagram-line" },
+  { name: "X", href: "#", icon: "ri:twitter-x-line" },
+  { name: "LinkedIn", href: "#", icon: "ri:linkedin-fill" },
+  { name: "YouTube", href: "#", icon: "ri:youtube-fill" },
 ];
 
 export default function Footer() {
@@ -53,34 +33,43 @@ export default function Footer() {
 
   return (
     <footer className="bg-[#111827] text-gray-300">
-      {/* ================= MAIN FOOTER ================= */}
       <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:px-10">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
-          {/* ================= BRAND ================= */}
           <div className="lg:pr-8">
-            {/* Logo */}
-            <Link href="/" className="inline-flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#C93B5B] shadow-lg shadow-[#C93B5B]/20">
-                <Icon
-                  icon="solar:home-2-bold"
-                  width="23"
-                  className="text-white"
-                />
-              </div>
+            <Link href="/" className="inline-flex items-center gap-2.5 group">
+              <span className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-[#A61C3C] via-[#7A1F2B] to-[#4A0E1A] shadow-lg shadow-[#A61C3C]/25 transition-transform duration-200 group-hover:scale-105 group-hover:-rotate-6">
+                <span className="absolute -right-2 -top-3 h-7 w-7 rounded-full bg-white/15" />
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className="relative h-5 w-5"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M3 10.5 12 3l9 7.5" />
+                  <path d="M5.5 9.5V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V9.5" />
+                  <path d="M10 21v-5.5a2 2 0 0 1 4 0V21" />
+                </svg>
+              </span>
 
-              <span className="text-2xl font-extrabold tracking-tight">
-                <span className="text-white">Shopno</span>
-                <span className="text-[#C93B5B]">Nir</span>
+              <span className="flex flex-col leading-none">
+                <span className="text-2xl font-extrabold tracking-tight">
+                  <span className="text-white">Shopno</span>
+                  <span className="text-[#E8688A]">Nir</span>
+                </span>
+                <span className="mt-1 text-[10px] font-medium uppercase tracking-[0.18em] text-gray-500">
+                  Rent with ease
+                </span>
               </span>
             </Link>
 
-            {/* Description */}
             <p className="mt-5 max-w-sm text-sm leading-7 text-gray-400">
               Find your perfect home with ease. Explore verified properties,
               compare prices, and book your ideal place with confidence.
             </p>
 
-            {/* Social Media */}
             <div className="mt-7">
               <h4 className="mb-4 text-sm font-semibold text-white">
                 Follow Us
@@ -92,7 +81,7 @@ export default function Footer() {
                     key={social.name}
                     href={social.href}
                     aria-label={social.name}
-                    className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-gray-400 transition-all duration-300 hover:-translate-y-1 hover:border-[#C93B5B] hover:bg-[#C93B5B] hover:text-white"
+                    className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-gray-400 transition-all duration-300 hover:-translate-y-1 hover:border-[#A61C3C] hover:bg-[#A61C3C] hover:text-white"
                   >
                     <Icon
                       icon={social.icon}
@@ -105,7 +94,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* ================= QUICK LINKS ================= */}
           <div>
             <h3 className="text-base font-bold text-white">Quick Links</h3>
 
@@ -114,7 +102,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="group flex items-center gap-2 text-sm text-gray-400 transition-colors duration-200 hover:text-[#C93B5B]"
+                    className="group flex items-center gap-2 text-sm text-gray-400 transition-colors duration-200 hover:text-[#E8688A]"
                   >
                     <Icon
                       icon="solar:alt-arrow-right-linear"
@@ -129,7 +117,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* ================= PROPERTY ================= */}
           <div>
             <h3 className="text-base font-bold text-white">Properties</h3>
 
@@ -138,7 +125,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="group flex items-center gap-2 text-sm text-gray-400 transition-colors duration-200 hover:text-[#C93B5B]"
+                    className="group flex items-center gap-2 text-sm text-gray-400 transition-colors duration-200 hover:text-[#E8688A]"
                   >
                     <Icon
                       icon="solar:alt-arrow-right-linear"
@@ -153,18 +140,16 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* ================= CONTACT ================= */}
           <div>
             <h3 className="text-base font-bold text-white">Contact Us</h3>
 
             <div className="mt-5 space-y-5">
-              {/* Address */}
               <div className="flex items-start gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#C93B5B]/10">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#A61C3C]/15">
                   <Icon
                     icon="solar:map-point-bold"
                     width="19"
-                    className="text-[#C93B5B]"
+                    className="text-[#E8688A]"
                   />
                 </div>
 
@@ -177,13 +162,12 @@ export default function Footer() {
                 </div>
               </div>
 
-              {/* Phone */}
               <div className="flex items-start gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#C93B5B]/10">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#A61C3C]/15">
                   <Icon
                     icon="solar:phone-bold"
                     width="19"
-                    className="text-[#C93B5B]"
+                    className="text-[#E8688A]"
                   />
                 </div>
 
@@ -194,13 +178,12 @@ export default function Footer() {
                 </div>
               </div>
 
-              {/* Email */}
               <div className="flex items-start gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#C93B5B]/10">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#A61C3C]/15">
                   <Icon
                     icon="solar:letter-bold"
                     width="19"
-                    className="text-[#C93B5B]"
+                    className="text-[#E8688A]"
                   />
                 </div>
 
@@ -208,7 +191,7 @@ export default function Footer() {
                   <p className="text-sm font-semibold text-white">Email</p>
 
                   <p className="mt-1 text-sm text-gray-400">
-                    support@homenest.com
+                    support@shopnonir.com
                   </p>
                 </div>
               </div>
@@ -216,21 +199,19 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* ================= NEWSLETTER ================= */}
         <div className="mt-14 rounded-2xl border border-white/10 bg-white/[0.04] p-6 sm:p-8">
           <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
-            {/* Text */}
             <div className="max-w-xl">
               <div className="mb-3 flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#C93B5B]/10">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#A61C3C]/15">
                   <Icon
                     icon="solar:letter-opened-bold"
                     width="17"
-                    className="text-[#C93B5B]"
+                    className="text-[#E8688A]"
                   />
                 </div>
 
-                <span className="text-xs font-bold tracking-widest text-[#C93B5B]">
+                <span className="text-xs font-bold tracking-widest text-[#E8688A]">
                   NEWSLETTER
                 </span>
               </div>
@@ -245,7 +226,6 @@ export default function Footer() {
               </p>
             </div>
 
-            {/* Newsletter */}
             <div className="flex w-full max-w-lg flex-col gap-3 sm:flex-row">
               <Input
                 type="email"
@@ -256,14 +236,14 @@ export default function Footer() {
                 classNames={{
                   input: "text-white",
                   inputWrapper:
-                    "border-white/10 bg-white/5 hover:border-[#C93B5B] group-data-[focus=true]:border-[#C93B5B]",
+                    "border-white/10 bg-white/5 hover:border-[#A61C3C] group-data-[focus=true]:border-[#A61C3C]",
                 }}
               />
 
               <Button
                 size="lg"
                 radius="lg"
-                className="bg-[#C93B5B] px-7 font-bold text-white transition-all duration-300 hover:bg-[#B33250] hover:shadow-lg hover:shadow-[#C93B5B]/20"
+                className="bg-gradient-to-r from-[#A61C3C] to-[#4A0E1A] px-7 font-bold text-white transition-all duration-300 hover:opacity-90 hover:shadow-lg hover:shadow-[#A61C3C]/25"
               >
                 Subscribe
               </Button>
@@ -272,32 +252,29 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* ================= BOTTOM ================= */}
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-6 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10">
-          {/* Copyright */}
           <p className="text-center text-sm text-gray-500 md:text-left">
             © {year}{" "}
-            <span className="font-semibold text-gray-300">HomeNest</span>. All
+            <span className="font-semibold text-gray-300">ShopnoNir</span>. All
             rights reserved.
           </p>
 
-          {/* Policies */}
           <div className="flex items-center justify-center gap-5 text-sm">
             <Link
-              href="/privacy-policy"
-              className="text-gray-500 transition-colors hover:text-[#C93B5B]"
+              href="/all-properties"
+              className="text-gray-500 transition-colors hover:text-[#E8688A]"
             >
-              Privacy Policy
+              Browse Properties
             </Link>
 
             <span className="h-4 w-px bg-white/10" />
 
             <Link
-              href="/terms"
-              className="text-gray-500 transition-colors hover:text-[#C93B5B]"
+              href="/dashboard"
+              className="text-gray-500 transition-colors hover:text-[#E8688A]"
             >
-              Terms & Conditions
+              Dashboard
             </Link>
           </div>
         </div>

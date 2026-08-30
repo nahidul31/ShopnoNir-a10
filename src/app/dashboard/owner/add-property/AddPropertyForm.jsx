@@ -7,7 +7,7 @@ import { Button, Chip, Toast, toast } from "@heroui/react";
 import { createNewProperty } from "@/lib/action/create-property";
 
 const fieldClass =
-  "w-full [color-scheme:light] rounded-xl border border-neutral-200 bg-neutral-50 px-3.5 py-2.5 text-sm text-neutral-800 outline-none transition-all placeholder:text-neutral-400 hover:border-neutral-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10";
+  "w-full [color-scheme:light] rounded-xl border border-neutral-200 bg-neutral-50 px-3.5 py-2.5 text-sm text-neutral-800 outline-none transition-all placeholder:text-neutral-400 hover:border-neutral-300 focus:border-[#A61C3C] focus:bg-white focus:ring-4 focus:ring-[#A61C3C]/10";
 const fieldWithIconClass = `${fieldClass} pl-10`;
 const labelClass = "mb-1.5 block text-sm font-medium text-neutral-700";
 const errorClass =
@@ -47,7 +47,7 @@ function Section({ icon, title, children }) {
   return (
     <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm shadow-neutral-200/50">
       <div className="flex items-center gap-2.5 border-b border-neutral-100 bg-neutral-50/60 px-6 py-4">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#FBE7EA] text-[#8C1C2B]">
           <Icon icon={icon} width={18} />
         </span>
         <h2 className="text-base font-semibold text-neutral-900">{title}</h2>
@@ -376,7 +376,7 @@ export default function AddPropertyForm() {
       <form onSubmit={handleSubmit} className="mx-auto max-w-4xl space-y-6">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-sm">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#A61C3C] to-[#4A0E1A] text-white shadow-md shadow-[#7A1F2B]/30">
             <Icon icon="gravity-ui:house" width={24} height={24} />
           </div>
           <div>
@@ -555,13 +555,12 @@ export default function AddPropertyForm() {
                   onPress={() => toggleAmenity(item.key)}
                   aria-pressed={selected}
                   variant={selected ? "flat" : "bordered"}
-                  color={selected ? "success" : "default"}
-                  startContent={<Icon icon={item.icon} width={18} />}
                   className={`justify-start rounded-xl text-sm ${
                     selected
-                      ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                      ? "border-[#A61C3C] bg-[#FBE7EA] text-[#8C1C2B]"
                       : "border-neutral-200 text-neutral-600"
                   }`}
+                  startContent={<Icon icon={item.icon} width={18} />}
                 >
                   {item.label}
                 </Button>
@@ -577,7 +576,7 @@ export default function AddPropertyForm() {
             className={`flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed py-10 text-center transition-colors ${
               images.length >= MAX_IMAGES
                 ? "cursor-not-allowed border-neutral-200 text-neutral-300"
-                : "cursor-pointer border-neutral-300 text-neutral-500 hover:border-emerald-400 hover:text-emerald-600"
+                : "cursor-pointer border-neutral-300 text-neutral-500 hover:border-[#A61C3C] hover:text-[#8C1C2B]"
             }`}
           >
             <Icon icon="gravity-ui:cloud-arrow-up-in" width={28} />
@@ -734,11 +733,10 @@ export default function AddPropertyForm() {
               Save as Draft
             </Button>
             <Button
-              color="success"
               type="submit"
               isLoading={submitting}
               isDisabled={anyUploading}
-              className="flex-1 text-white sm:flex-none"
+              className="flex-1 bg-gradient-to-r from-[#A61C3C] to-[#4A0E1A] text-white shadow-md shadow-[#7A1F2B]/30 sm:flex-none"
               startContent={
                 !submitting && <Icon icon="gravity-ui:check" width={18} />
               }

@@ -1,7 +1,7 @@
-import React from "react";
+import { redirect } from "next/navigation";
 
 const TenantPage = () => {
-  return <div>iam tenant broooooooo</div>;
+  redirect("/dashboard/tenant/profile");
 };
 
 export default TenantPage;

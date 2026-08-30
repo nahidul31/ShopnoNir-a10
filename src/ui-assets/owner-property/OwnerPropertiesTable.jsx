@@ -2,8 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Chip, Button, Avatar, Tooltip } from "@heroui/react";
+import Link from "next/link";
+import { Chip, Button, Tooltip, toast } from "@heroui/react";
 import { Icon } from "@iconify/react";
+import EditPropertyModal from "./EditPropertyModal";
+import ViewFeedbackModal from "./ViewFeedbackModal";
 
 const statusColorMap = {
   pending: "warning",
@@ -23,7 +26,6 @@ const columns = [
   "LOCATION",
   "TYPE",
   "RENT",
-  "OWNER",
   "STATUS",
   "ACTIONS",
 ];
@@ -32,19 +34,29 @@ export default function OwnerPropertiesTable({ properties }) {
   const [loadingId, setLoadingId] = useState(null);
   const router = useRouter();
 
-  const handleUpdate = (id) => {
-    router.push(`/dashboard/owner/properties/update/${id}`);
-  };
-
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, title) => {
     if (!confirm("Are you sure you want to delete this property?")) return;
 
     setLoadingId(id);
     try {
-      const res = await fetch(`/api/properties/${id}`, { method: "DELETE" });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_URL}/api/property/${id}`,
+        { method: "DELETE" },
+      );
+
       if (res.ok) {
+        toast.success("Property deleted", {
+          description: `"${title}" has been removed.`,
+        });
         router.refresh();
+      } else {
+        throw new Error("Delete failed");
       }
+    } catch (err) {
+      console.error(err);
+      toast.danger("Delete failed", {
+        description: "Something went wrong. Please try again.",
+      });
     } finally {
       setLoadingId(null);
     }
@@ -81,27 +93,36 @@ export default function OwnerPropertiesTable({ properties }) {
               key={property._id}
               className="border-t border-default-200 hover:bg-default-50 transition-colors"
             >
-              {/* IMAGE */}
+              {/* IMAGE — clickable */}
               <td className="px-4 py-3">
-                {property.images?.[0] ? (
-                  <img
-                    src={property.images[0]}
-                    alt={property.title}
-                    className="w-14 h-14 object-cover rounded-lg border border-default-200"
-                  />
-                ) : (
-                  <div className="w-14 h-14 flex items-center justify-center rounded-lg bg-default-100 text-default-400">
-                    <Icon icon="solar:home-broken" width={22} />
-                  </div>
-                )}
+                <Link href={`/all-properties/${property._id}`}>
+                  {property.images?.[0] ? (
+                    <img
+                      src={property.images[0]}
+                      alt={property.title}
+                      className="w-14 h-14 object-cover rounded-lg border border-default-200 hover:opacity-80 transition-opacity"
+                    />
+                  ) : (
+                    <div className="w-14 h-14 flex items-center justify-center rounded-lg bg-default-100 text-default-400">
+                      <Icon icon="solar:home-broken" width={22} />
+                    </div>
+                  )}
+                </Link>
               </td>
 
-              {/* TITLE */}
+              {/* TITLE — clickable */}
               <td className="px-4 py-3">
-                <p className="font-medium text-default-800">{property.title}</p>
-                <p className="text-xs text-default-400 line-clamp-1 max-w-[200px]">
-                  {property.description}
-                </p>
+                <Link
+                  href={`/all-properties/${property._id}`}
+                  className="block group"
+                >
+                  <p className="font-medium text-default-800 group-hover:text-[#A61C3C] transition-colors">
+                    {property.title}
+                  </p>
+                  <p className="text-xs text-default-400 line-clamp-1 max-w-[200px]">
+                    {property.description}
+                  </p>
+                </Link>
               </td>
 
               {/* LOCATION */}
@@ -129,14 +150,6 @@ export default function OwnerPropertiesTable({ properties }) {
                 </span>
               </td>
 
-              {/* OWNER */}
-              <td className="px-4 py-3">
-                <div className="flex items-center gap-1 text-default-600">
-                  <Icon icon="solar:user-broken" width={16} />
-                  {property.ownerName}
-                </div>
-              </td>
-
               {/* STATUS */}
               <td className="px-4 py-3">
                 <Chip
@@ -159,26 +172,31 @@ export default function OwnerPropertiesTable({ properties }) {
               {/* ACTIONS */}
               <td className="px-4 py-3">
                 <div className="flex items-center gap-2">
-                  <Tooltip content="Update property">
+                  <Tooltip content="View details">
                     <Button
+                      as={Link}
+                      href={`/all-properties/${property._id}`}
                       isIconOnly
                       size="sm"
-                      variant="flat"
-                      color="primary"
-                      onPress={() => handleUpdate(property._id)}
+                      variant="tertiary"
                     >
-                      <Icon icon="solar:pen-2-broken" width={18} />
+                      <Icon icon="solar:eye-broken" width={18} />
                     </Button>
                   </Tooltip>
 
-                  <Tooltip content="Delete property" color="danger">
+                  {property.status === "rejected" && (
+                    <ViewFeedbackModal property={property} />
+                  )}
+
+                  <EditPropertyModal property={property} />
+
+                  <Tooltip content="Delete property">
                     <Button
                       isIconOnly
                       size="sm"
-                      variant="flat"
-                      color="danger"
-                      isLoading={loadingId === property._id}
-                      onPress={() => handleDelete(property._id)}
+                      variant="danger-soft"
+                      isDisabled={loadingId === property._id}
+                      onPress={() => handleDelete(property._id, property.title)}
                     >
                       <Icon icon="solar:trash-bin-trash-broken" width={18} />
                     </Button>

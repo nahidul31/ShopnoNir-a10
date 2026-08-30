@@ -6,7 +6,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 
-// Gravity UI icons — npm install @gravity-ui/icons
 import {
   House,
   CopyChevronRight,
@@ -17,10 +16,9 @@ import {
   Bars,
   Xmark,
   ChevronDown,
-  BookOpen,
   LayoutColumns3,
 } from "@gravity-ui/icons";
-import { Avatar, Button, Separator } from "@heroui/react";
+import { Avatar, Button } from "@heroui/react";
 import { toast } from "react-toastify";
 import { authClient } from "@/lib/auth-client";
 
@@ -36,12 +34,10 @@ export default function Navbar() {
   const triggerRef = useRef(null);
   const panelRef = useRef(null);
 
-  const { data: session, isPending, error, refetch } = authClient.useSession();
+  const { data: session, refetch } = authClient.useSession();
   const user = session?.user;
 
   useEffect(() => setMounted(true), []);
-
-  // ── Required nav items ──────────────────────────────────────────────
 
   const NAV_LINKS = [
     { href: "/", label: "Home", Icon: House },
@@ -73,7 +69,6 @@ export default function Navbar() {
   const isActive = (href) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
-  // Compute dropdown position relative to the trigger button (viewport-based, since panel uses `fixed`)
   const updateDropdownPos = useCallback(() => {
     if (!triggerRef.current) return;
     const rect = triggerRef.current.getBoundingClientRect();
@@ -88,7 +83,6 @@ export default function Navbar() {
     setDropdownOpen((p) => !p);
   };
 
-  // Reposition on scroll/resize while open, and close on outside click / Escape
   useEffect(() => {
     if (!dropdownOpen) return;
 
@@ -120,21 +114,40 @@ export default function Navbar() {
   }, [dropdownOpen, updateDropdownPos]);
 
   return (
-    <nav className="top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-[#F0DADD] shadow-sm shadow-[#F6E3E6]">
-      {/* ── Main bar ─────────────────────────────────────────────────── */}
+    <nav className="fixed top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-[#F0DADD] shadow-sm shadow-[#F6E3E6]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-        {/* ── Logo + Website Name ── */}
-        <Link href="/" className="flex items-center gap-2 flex-shrink-0 group">
-          <span className="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-[#A61C3C] to-[#4A0E1A] shadow-md shadow-[#7A1F2B]/30 group-hover:scale-105 group-hover:-rotate-6 transition-all duration-200">
-            <BookOpen className="w-[18px] h-[18px] text-white" />
+        <Link
+          href="/"
+          className="flex items-center gap-2.5 flex-shrink-0 group"
+        >
+          <span className="relative flex items-center justify-center w-10 h-10 rounded-2xl bg-gradient-to-br from-[#A61C3C] via-[#7A1F2B] to-[#4A0E1A] shadow-md shadow-[#7A1F2B]/30 group-hover:scale-105 group-hover:-rotate-6 transition-all duration-200 overflow-hidden">
+            <span className="absolute -top-3 -right-2 w-7 h-7 rounded-full bg-white/15" />
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              className="relative w-5 h-5"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 10.5 12 3l9 7.5" />
+              <path d="M5.5 9.5V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V9.5" />
+              <path d="M10 21v-5.5a2 2 0 0 1 4 0V21" />
+            </svg>
           </span>
-          <span className="text-xl font-extrabold tracking-tight text-slate-900">
-            Shopno<span className="text-[#8C1C2B]">Nir</span>
+
+          <span className="flex flex-col leading-none">
+            <span className="text-xl font-extrabold tracking-tight text-slate-900">
+              Shopno<span className="text-[#8C1C2B]">Nir</span>
+            </span>
+            <span className="text-[10px] font-medium tracking-[0.18em] uppercase text-slate-400 mt-0.5 hidden sm:block">
+              Rent with ease
+            </span>
           </span>
         </Link>
 
         <div className="flex gap-7">
-          {/* ── Desktop nav links ── */}
           <ul className="hidden md:flex items-center gap-1 list-none m-0 p-0">
             {NAV_LINKS.map(({ href, label, Icon }) => (
               <li key={href}>
@@ -143,7 +156,7 @@ export default function Navbar() {
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150 no-underline
                   ${
                     isActive(href)
-                      ? "bg-[#FBE7EA] text-[#7A1F2B] font-semibold shadow-sm"
+                      ? "bg-[#FBE7EA] text-[#8C1C2B] font-semibold"
                       : "text-slate-500 hover:bg-[#FDF2F3] hover:text-[#A61C3C]"
                   }`}
                 >
@@ -159,15 +172,13 @@ export default function Navbar() {
 
           <div className="w-px bg-gray-500/50" />
 
-          {/* ── Right actions ── */}
           <div className="flex items-center gap-2">
             {user ? (
-              /* ── Logged IN — Avatar + Dropdown (contains Logout) ── */
               <div className="relative hidden md:block">
                 <Button
                   ref={triggerRef}
                   onPress={toggleDropdown}
-                  className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border border-slate-200 bg-white hover:border-[#A61C3C] hover:shadow-md hover:shadow-[#F3D9DE] transition-all duration-150 cursor-pointer"
+                  className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-gradient-to-r from-[#A61C3C] to-[#4A0E1A] text-white shadow-md shadow-[#7A1F2B]/40 hover:shadow-lg hover:shadow-[#7A1F2B]/50 hover:-translate-y-0.5 transition-all duration-150 cursor-pointer"
                 >
                   <div className="relative w-7 h-7 flex items-center">
                     {user?.image?.startsWith("https") ? (
@@ -176,26 +187,24 @@ export default function Navbar() {
                         alt="profile"
                         fill
                         sizes="30px"
-                        className="rounded-full object-cover border border-[#A61C3C]"
+                        className="rounded-full object-cover border-2 border-white/40"
                       />
                     ) : (
-                      <Avatar className="w-8 h-8 rounded-full border border-[#F0DADD]">
+                      <Avatar className="w-8 h-8 rounded-full border-2 border-white/40 bg-white/20">
                         <Avatar.Fallback className="flex items-center justify-center w-full h-full">
-                          <Person className="w-5 h-5 text-[#8C1C2B]" />
+                          <Person className="w-5 h-5 text-white" />
                         </Avatar.Fallback>
                       </Avatar>
                     )}
                   </div>
-                  <span className="text-sm font-semibold text-slate-800 hidden lg:block max-w-[100px] truncate">
+                  <span className="text-sm font-semibold text-white hidden lg:block max-w-[100px] truncate">
                     {user?.name}
                   </span>
                   <ChevronDown
-                    className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
+                    className={`w-3.5 h-3.5 text-white/70 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
                   />
                 </Button>
 
-                {/* Dropdown menu — portalled to <body> so ancestor overflow-hidden
-                    (e.g. hero/carousel sections on the home page) can never clip it */}
                 {mounted &&
                   dropdownOpen &&
                   createPortal(
@@ -242,11 +251,10 @@ export default function Navbar() {
                   )}
               </div>
             ) : (
-              /* ── Logged OUT — Login / Register ── */
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   href="/login"
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all duration-150 no-underline"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl border-2 border-[#A61C3C] text-sm font-semibold text-[#A61C3C] hover:bg-gradient-to-r hover:from-[#A61C3C] hover:to-[#4A0E1A] hover:text-white transition-all duration-150 no-underline"
                 >
                   <ArrowRightToSquare className="w-4 h-4" />
                   Login
@@ -261,10 +269,9 @@ export default function Navbar() {
               </div>
             )}
 
-            {/* Hamburger — mobile only */}
             <Button
               onPress={() => setMobileOpen((p) => !p)}
-              className="md:hidden flex items-center justify-center w-9 h-9 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+              className="md:hidden flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-[#A61C3C] to-[#4A0E1A] text-white shadow-md shadow-[#7A1F2B]/30 transition-all cursor-pointer"
               aria-label="Toggle menu"
             >
               {mobileOpen ? (
@@ -277,7 +284,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ── Mobile drawer ────────────────────────────────────────────── */}
       {mobileOpen && (
         <div className="md:hidden border-t border-[#F0DADD] bg-white px-4 pb-5 pt-3 flex flex-col gap-1">
           {NAV_LINKS.map(({ href, label, Icon }) => (
@@ -288,7 +294,7 @@ export default function Navbar() {
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150 no-underline
                 ${
                   isActive(href)
-                    ? "bg-[#FBE7EA] text-[#7A1F2B] font-semibold"
+                    ? "bg-[#FBE7EA] text-[#8C1C2B] font-semibold"
                     : "text-slate-600 hover:bg-[#FDF2F3] hover:text-[#A61C3C]"
                 }`}
             >
@@ -330,7 +336,7 @@ export default function Navbar() {
               <Link
                 href="/login"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors no-underline"
+                className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-[#A61C3C] text-sm font-semibold text-[#A61C3C] hover:bg-gradient-to-r hover:from-[#A61C3C] hover:to-[#4A0E1A] hover:text-white transition-all no-underline"
               >
                 <ArrowRightToSquare className="w-4 h-4" />
                 Login
@@ -338,7 +344,7 @@ export default function Navbar() {
               <Link
                 href="/register"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-linear-to-r from-[#A61C3C] to-[#4A0E1A] text-sm font-semibold text-white shadow-md shadow-[#7A1F2B]/40 transition-colors no-underline"
+                className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-[#A61C3C] to-[#4A0E1A] text-sm font-semibold text-white shadow-md shadow-[#7A1F2B]/40 transition-colors no-underline"
               >
                 <PersonPlus className="w-4 h-4" />
                 Register

@@ -1,5 +1,9 @@
 import { Icon } from "@iconify/react";
-import { Chip, Button } from "@heroui/react";
+import { Chip } from "@heroui/react";
+import { getServerSession } from "@/lib/action/get-server-session";
+import FavoriteButton from "@/ui-assets/property-details/FavoriteButton";
+import BookingModal from "@/ui-assets/property-details/BookingModal";
+import PropertyReviews from "@/ui-assets/property-details/PropertyReviews";
 
 const statusColorMap = {
   pending: "warning",
@@ -38,6 +42,9 @@ async function getProperty(id) {
 
 export default async function PropertyDetailsPage({ params }) {
   const { id } = await params;
+
+  const session = await getServerSession();
+  const user = session?.user || null;
 
   const property = await getProperty(id);
 
@@ -140,7 +147,7 @@ export default async function PropertyDetailsPage({ params }) {
               <Icon
                 icon="solar:bed-broken"
                 width={20}
-                className="text-primary-600"
+                className="text-[#8C1C2B]"
               />
               {bedrooms} Bedrooms
             </span>
@@ -148,7 +155,7 @@ export default async function PropertyDetailsPage({ params }) {
               <Icon
                 icon="solar:bath-broken"
                 width={20}
-                className="text-primary-600"
+                className="text-[#8C1C2B]"
               />
               {bathrooms} Bathrooms
             </span>
@@ -157,7 +164,7 @@ export default async function PropertyDetailsPage({ params }) {
                 <Icon
                   icon="solar:ruler-cross-pen-broken"
                   width={20}
-                  className="text-primary-600"
+                  className="text-[#8C1C2B]"
                 />
                 {size} sqft
               </span>
@@ -210,7 +217,7 @@ export default async function PropertyDetailsPage({ params }) {
                 <Icon
                   icon="solar:star-broken"
                   width={16}
-                  className="text-primary-600"
+                  className="text-[#8C1C2B]"
                 />
                 {extraFeatures}
               </p>
@@ -219,11 +226,11 @@ export default async function PropertyDetailsPage({ params }) {
 
           {/* Owner */}
           <div className="mt-10 pt-6 border-t border-default-200 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary-50 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-[#FBE7EA] flex items-center justify-center">
               <Icon
                 icon="solar:user-broken"
                 width={20}
-                className="text-primary-600"
+                className="text-[#8C1C2B]"
               />
             </div>
             <div>
@@ -233,13 +240,16 @@ export default async function PropertyDetailsPage({ params }) {
               </p>
             </div>
           </div>
+
+          {/* Reviews */}
+          <PropertyReviews propertyId={property._id} user={user} />
         </div>
 
         {/* Right: sticky booking card */}
         <div className="lg:col-span-1">
-          <div className="sticky top-6 border border-default-200 rounded-2xl p-6 shadow-sm">
+          <div className="sticky top-24 border border-default-200 rounded-2xl p-6 shadow-sm">
             <div className="mb-5">
-              <span className="text-2xl sm:text-3xl font-bold text-primary-600">
+              <span className="text-2xl sm:text-3xl font-bold text-[#8C1C2B]">
                 ৳{rent}
               </span>
               <span className="text-default-400 text-sm ml-1">
@@ -247,24 +257,9 @@ export default async function PropertyDetailsPage({ params }) {
               </span>
             </div>
 
-            <Button
-              color="primary"
-              size="lg"
-              radius="full"
-              className="w-full font-semibold"
-            >
-              Book Now
-            </Button>
+            <BookingModal property={property} user={user} />
 
-            <Button
-              variant="bordered"
-              size="lg"
-              radius="full"
-              className="w-full mt-3 font-medium"
-              startContent={<Icon icon="solar:heart-broken" width={18} />}
-            >
-              Add to Favorites
-            </Button>
+            <FavoriteButton property={property} user={user} />
 
             <div className="mt-6 space-y-2">
               <p className="flex items-center gap-2 text-sm text-default-500">

@@ -1,14 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-const statuses = ["pending", "approved", "rejected"];
+// "rejected" বাদ — reject করতে হলে ❌ বাটনের modal দিয়ে feedback সহ করতে হবে
+const statuses = ["pending", "approved"];
 
 export default function StatusSelect({ propertyId, currentStatus }) {
   const [status, setStatus] = useState(currentStatus);
   const [updating, setUpdating] = useState(false);
   const router = useRouter();
+
+  // reject modal থেকে status বদলালে dropdown-ও সাথে সাথে সিঙ্ক হবে
+  useEffect(() => {
+    setStatus(currentStatus);
+  }, [currentStatus]);
 
   const handleChange = async (e) => {
     const newStatus = e.target.value;
@@ -45,8 +51,15 @@ export default function StatusSelect({ propertyId, currentStatus }) {
       value={status}
       disabled={updating}
       onChange={handleChange}
-      className="border border-default-300 rounded-lg px-3 py-2 text-sm capitalize bg-white cursor-pointer hover:border-default-400 focus:outline-none focus:ring-2 focus:ring-primary-200 disabled:opacity-50 disabled:cursor-not-allowed"
+      className="border border-default-300 rounded-lg px-3 py-2 text-sm capitalize bg-white cursor-pointer hover:border-default-400 focus:outline-none focus:ring-2 focus:ring-[#F0DADD] disabled:opacity-50 disabled:cursor-not-allowed"
     >
+      {/* property অলরেডি rejected হলে সেটাও দেখাতে হবে, নইলে dropdown খালি দেখাবে */}
+      {status === "rejected" && (
+        <option value="rejected" className="capitalize">
+          rejected
+        </option>
+      )}
+
       {statuses.map((s) => (
         <option key={s} value={s} className="capitalize">
           {s}

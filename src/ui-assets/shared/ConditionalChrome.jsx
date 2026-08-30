@@ -13,18 +13,13 @@ export default function ConditionalChrome({ children }) {
   );
 
   if (hideChrome) {
-    return (
-      <>
-        <Navbar />
-        <main>{children}</main>
-      </>
-    );
+    return <main>{children}</main>;
   }
 
   return (
     <div>
       <Navbar />
-      <main>{children}</main>
+      <main className="pt-16">{children}</main>
       <Footer />
     </div>
   );

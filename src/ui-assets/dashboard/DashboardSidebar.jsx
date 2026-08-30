@@ -11,6 +11,11 @@ const NAV_CONFIG = {
     label: "Tenant Dashboard",
     items: [
       {
+        label: "Profile",
+        href: "/dashboard/tenant/profile",
+        icon: "solar:user-circle-bold-duotone",
+      },
+      {
         label: "My Bookings",
         href: "/dashboard/tenant/my-booking",
         icon: "solar:calendar-mark-bold-duotone",
@@ -18,12 +23,7 @@ const NAV_CONFIG = {
       {
         label: "Favorites",
         href: "/dashboard/tenant/favorites",
-        icon: "solar:heart-bold-duotone",
-      },
-      {
-        label: "Profile",
-        href: "/dashboard/tenant/profile",
-        icon: "solar:user-circle-bold-duotone",
+        icon: "solar:heart-angle-bold-duotone",
       },
     ],
   },
@@ -33,8 +33,9 @@ const NAV_CONFIG = {
     items: [
       {
         label: "Overview",
-        href: "/dashboard/owner/overview",
-        icon: "solar:widget-5-bold-duotone",
+        href: "/dashboard/owner",
+        icon: "solar:chart-square-bold-duotone",
+        exact: true,
       },
       {
         label: "My Properties",
@@ -44,17 +45,12 @@ const NAV_CONFIG = {
       {
         label: "Booking Requests",
         href: "/dashboard/owner/booking-request",
-        icon: "solar:calendar-mark-bold-duotone",
+        icon: "solar:inbox-in-bold-duotone",
       },
       {
         label: "Add Property",
         href: "/dashboard/owner/add-property",
-        icon: "solar:wallet-money-bold-duotone",
-      },
-      {
-        label: "Reviews",
-        href: "/dashboard/owner/reviews",
-        icon: "solar:star-bold-duotone",
+        icon: "solar:add-square-bold-duotone",
       },
       {
         label: "Profile",
@@ -69,8 +65,9 @@ const NAV_CONFIG = {
     items: [
       {
         label: "Overview",
-        href: "/dashboard/admin/overview",
-        icon: "solar:widget-5-bold-duotone",
+        href: "/dashboard/admin",
+        icon: "solar:chart-square-bold-duotone",
+        exact: true,
       },
       {
         label: "Manage Users",
@@ -84,18 +81,18 @@ const NAV_CONFIG = {
       },
       {
         label: "All Bookings",
-        href: "/dashboard/admin/bookings",
+        href: "/dashboard/admin/manage-bookings",
         icon: "solar:calendar-mark-bold-duotone",
       },
       {
-        label: "Reports",
-        href: "/dashboard/admin/reports",
-        icon: "solar:chart-2-bold-duotone",
+        label: "Transaction",
+        href: "/dashboard/admin/transactions",
+        icon: "solar:wallet-money-bold-duotone",
       },
       {
-        label: "Settings",
-        href: "/dashboard/admin/settings",
-        icon: "solar:settings-bold-duotone",
+        label: "Profile",
+        href: "/dashboard/admin/admin-profile",
+        icon: "solar:user-circle-bold-duotone",
       },
     ],
   },
@@ -103,6 +100,7 @@ const NAV_CONFIG = {
 
 export default function DashboardSidebar({ session }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const pathname = usePathname();
 
   const user = session?.user;
@@ -115,31 +113,34 @@ export default function DashboardSidebar({ session }) {
   const config = NAV_CONFIG[role] ?? NAV_CONFIG.tenant;
   const NAV_ITEMS = config.items;
   const brandLabel = config.label;
-  const brandHref = `/dashboard/${role}`;
 
   const handleLogout = async () => {
+    setLoggingOut(true);
+
     try {
       await fetch("/api/auth/sign-out", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
       });
-
-      window.location.href = "/login";
     } catch (error) {
       console.error(error);
+    } finally {
+      window.location.href = "/login";
     }
   };
 
   return (
     <>
-      {/* Mobile Topbar — navbar এর নিচে */}
-      <div className="fixed inset-x-0 top-16 z-20 flex items-center justify-between border-b border-[#F0DADD] bg-white px-4 py-3 md:hidden">
-        <div className="flex items-center gap-2">
+      {/* Mobile Topbar */}
+      <div className="fixed inset-x-0 top-0 z-20 flex items-center justify-between border-b border-[#F0DADD] bg-white px-4 py-3 md:hidden">
+        <Link href="/" className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#A61C3C] to-[#4A0E1A] shadow-md shadow-[#7A1F2B]/30">
             <Icon icon="solar:home-2-bold" className="text-lg text-white" />
           </div>
 
           <span className="font-semibold text-slate-800">{brandLabel}</span>
-        </div>
+        </Link>
 
         <Button
           isIconOnly
@@ -164,16 +165,15 @@ export default function DashboardSidebar({ session }) {
         }`}
       />
 
-      {/* Sidebar — navbar এর নিচ থেকে শুরু */}
+      {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-16 bottom-0 z-30 flex w-72 flex-col border-r border-[#F0DADD] bg-white transition-transform duration-300 ease-out md:translate-x-0 ${
+        className={`fixed left-0 top-0 bottom-0 z-30 flex w-72 flex-col border-r border-[#F0DADD] bg-white transition-transform duration-300 ease-out md:translate-x-0 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Header */}
         <div className="flex items-center justify-between px-5 py-6">
           <Link
-            href={brandHref}
+            href="/"
             className="flex items-center gap-2.5"
             onClick={() => setIsOpen(false)}
           >
@@ -185,7 +185,7 @@ export default function DashboardSidebar({ session }) {
               <p className="text-sm font-semibold text-slate-800">
                 {brandLabel}
               </p>
-              <p className="text-xs text-slate-400">Private Route</p>
+              <p className="text-xs text-slate-400">Back to Home</p>
             </div>
           </Link>
         </div>
@@ -195,7 +195,9 @@ export default function DashboardSidebar({ session }) {
         {/* Navigation */}
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-5">
           {NAV_ITEMS.map((item) => {
-            const isActive = pathname?.startsWith(item.href);
+            const isActive = item.exact
+              ? pathname === item.href
+              : pathname?.startsWith(item.href);
 
             return (
               <Link
@@ -232,6 +234,7 @@ export default function DashboardSidebar({ session }) {
             size="sm"
             variant="light"
             radius="full"
+            isDisabled={loggingOut}
             onPress={handleLogout}
           >
             <Icon

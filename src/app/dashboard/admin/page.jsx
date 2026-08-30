@@ -1,11 +1,7 @@
-import React from "react";
+// import AdminAnalytics from "@/ui-assets/dashboard/AdminAnalytics";
 
-const AdminPage = () => {
-  return (
-    <div>
-      <h1>i am a adminnnnnnnnnnnnnnnnn</h1>
-    </div>
-  );
-};
+import AdminAnalytics from "@/ui-assets/admin/AdminAnalytics";
 
-export default AdminPage;
+export default function AdminDashboardPage() {
+  return <AdminAnalytics />;
+}
