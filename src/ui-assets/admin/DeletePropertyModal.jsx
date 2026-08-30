@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button, Modal, Tooltip, toast } from "@heroui/react";
 import { TrashBin } from "@gravity-ui/icons";
 
-export default function DeletePropertyModal({ property }) {
+export default function DeletePropertyModal({ property, token }) {
   const router = useRouter();
   const [deleting, setDeleting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -16,7 +16,10 @@ export default function DeletePropertyModal({ property }) {
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_URL}/api/property/${property._id}`,
-        { method: "DELETE" },
+        {
+          method: "DELETE",
+          headers: { authorization: `Bearer ${token}` },
+        },
       );
 
       if (!res.ok) throw new Error("Failed to delete");

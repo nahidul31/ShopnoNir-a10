@@ -1,3 +1,5 @@
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 import AdminPropertiesTable from "./AdminPropertiesTable";
 
 async function getAllProperties() {
@@ -15,6 +17,10 @@ async function getAllProperties() {
 export default async function ManagePropertyPage() {
   const properties = await getAllProperties();
 
+  const tokenData = await auth.api.getToken({
+    headers: await headers(),
+  });
+
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6">
       <div className="mb-6">
@@ -27,7 +33,7 @@ export default async function ManagePropertyPage() {
         </p>
       </div>
 
-      <AdminPropertiesTable properties={properties} />
+      <AdminPropertiesTable properties={properties} token={tokenData?.token} />
     </div>
   );
 }

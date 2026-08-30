@@ -1,4 +1,6 @@
-import PropertyCard from "./PropertyCard";
+// import PropertyGrid from "@/ui-assets/all-properties/PropertyGrid";
+
+import PropertyGrid from "@/ui-assets/shared/PropertyGrid";
 
 async function getFilteredProperties(searchParams) {
   const params = new URLSearchParams();
@@ -71,21 +73,8 @@ const AllProperties = async ({ searchParams }) => {
         </div>
       </div>
 
-      {/* Grid */}
-      {properties.length === 0 ? (
-        <div className="text-center py-20">
-          <p className="text-default-500">No properties match your search.</p>
-          <p className="text-default-400 text-sm mt-1">
-            Try a different location or price range.
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {properties.map((property) => (
-            <PropertyCard key={property._id} property={property} />
-          ))}
-        </div>
-      )}
+      {/* Grid + pagination */}
+      <PropertyGrid properties={properties} />
     </div>
   );
 };
