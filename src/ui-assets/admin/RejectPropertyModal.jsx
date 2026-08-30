@@ -5,15 +5,13 @@ import { useRouter } from "next/navigation";
 import { Button, Modal, Tooltip, toast } from "@heroui/react";
 import { CircleXmark } from "@gravity-ui/icons";
 
-export default function RejectPropertyModal({ property }) {
+export default function RejectPropertyModal({ property, token }) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [feedback, setFeedback] = useState(property.rejectionFeedback || "");
   const [submitting, setSubmitting] = useState(false);
 
   const handleReject = async () => {
-    console.log("1. Button clicked. Feedback:", feedback);
-
     if (!feedback.trim()) {
       toast.warning("Please write the reason for rejection");
       return;
@@ -21,23 +19,21 @@ export default function RejectPropertyModal({ property }) {
 
     setSubmitting(true);
 
-    const url = `${process.env.NEXT_PUBLIC_URL}/api/property/${property._id}`;
-    console.log("2. Sending PATCH to:", url);
-
     try {
-      const res = await fetch(url, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          status: "rejected",
-          rejectionFeedback: feedback.trim(),
-        }),
-      });
-
-      console.log("3. Response status:", res.status);
-
-      const data = await res.json();
-      console.log("4. Response body:", data);
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_URL}/api/property/${property._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            status: "rejected",
+            rejectionFeedback: feedback.trim(),
+          }),
+        },
+      );
 
       if (!res.ok) throw new Error("Failed");
 
@@ -48,7 +44,7 @@ export default function RejectPropertyModal({ property }) {
       setIsOpen(false);
       router.refresh();
     } catch (err) {
-      console.error("5. Error:", err);
+      console.error(err);
       toast.danger("Failed to reject property");
     } finally {
       setSubmitting(false);

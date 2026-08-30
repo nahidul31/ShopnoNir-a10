@@ -35,7 +35,7 @@ function formatDate(dateString) {
   });
 }
 
-export default function PropertyReviews({ propertyId, user }) {
+export default function PropertyReviews({ propertyId, user, token }) {
   const router = useRouter();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +50,7 @@ export default function PropertyReviews({ propertyId, user }) {
         `${process.env.NEXT_PUBLIC_URL}/api/reviews?propertyId=${propertyId}`,
       );
       const data = await res.json();
-      setReviews(data);
+      setReviews(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -60,6 +60,7 @@ export default function PropertyReviews({ propertyId, user }) {
 
   useEffect(() => {
     fetchReviews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propertyId]);
 
   const handleSubmit = async () => {
@@ -83,15 +84,23 @@ export default function PropertyReviews({ propertyId, user }) {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/reviews`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           propertyId,
-          name: user.name,
-          email: user.email,
+          tenantName: user.name,
+          tenantEmail: user.email,
           rating,
           comment: comment.trim(),
         }),
       });
+
+      if (res.status === 409) {
+        toast.warning("You've already reviewed this property");
+        return;
+      }
 
       if (!res.ok) throw new Error("Failed");
 
@@ -194,7 +203,7 @@ export default function PropertyReviews({ propertyId, user }) {
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#FBE7EA] flex items-center justify-center shrink-0">
                   <span className="text-sm font-semibold text-[#8C1C2B]">
-                    {review.name?.[0]?.toUpperCase() || "U"}
+                    {review.tenantName?.[0]?.toUpperCase() || "U"}
                   </span>
                 </div>
 
@@ -202,9 +211,11 @@ export default function PropertyReviews({ propertyId, user }) {
                   <div className="flex items-center justify-between gap-2 flex-wrap">
                     <div>
                       <p className="text-sm font-medium text-default-800">
-                        {review.name}
+                        {review.tenantName}
                       </p>
-                      <p className="text-xs text-default-400">{review.email}</p>
+                      <p className="text-xs text-default-400">
+                        {review.tenantEmail}
+                      </p>
                     </div>
                     <span className="text-xs text-default-400">
                       {formatDate(review.createdAt)}

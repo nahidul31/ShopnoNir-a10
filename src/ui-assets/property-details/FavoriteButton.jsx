@@ -5,21 +5,22 @@ import { useRouter } from "next/navigation";
 import { Button, toast } from "@heroui/react";
 import { Icon } from "@iconify/react";
 
-export default function FavoriteButton({ property, user }) {
+export default function FavoriteButton({ property, user, token }) {
   const router = useRouter();
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!user?.email) return;
+    if (!user?.email || !token) return;
 
     fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/favorites/check?userEmail=${user.email}&propertyId=${property._id}`,
+      { headers: { authorization: `Bearer ${token}` } },
     )
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : { isFavorite: false }))
       .then((d) => setIsFavorite(d.isFavorite))
       .catch(console.error);
-  }, [user?.email, property._id]);
+  }, [user?.email, property._id, token]);
 
   const handleToggle = async () => {
     if (!user) {
@@ -31,10 +32,16 @@ export default function FavoriteButton({ property, user }) {
 
     try {
       if (isFavorite) {
-        await fetch(
+        const res = await fetch(
           `${process.env.NEXT_PUBLIC_URL}/api/favorites?userEmail=${user.email}&propertyId=${property._id}`,
-          { method: "DELETE" },
+          {
+            method: "DELETE",
+            headers: { authorization: `Bearer ${token}` },
+          },
         );
+
+        if (!res.ok) throw new Error("Failed");
+
         setIsFavorite(false);
         toast.success("Removed from favorites");
       } else {
@@ -42,7 +49,10 @@ export default function FavoriteButton({ property, user }) {
           `${process.env.NEXT_PUBLIC_URL}/api/favorites`,
           {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${token}`,
+            },
             body: JSON.stringify({
               userEmail: user.email,
               propertyId: property._id,

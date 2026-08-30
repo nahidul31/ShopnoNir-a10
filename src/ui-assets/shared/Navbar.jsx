@@ -226,15 +226,6 @@ export default function Navbar() {
                         </p>
                       </div>
 
-                      <Link
-                        href="/dashboard"
-                        onClick={() => setDropdownOpen(false)}
-                        className="flex items-center gap-2.5 mx-1 px-3 py-2.5 text-sm text-slate-700 hover:bg-[#FDF2F3] rounded-xl transition-colors no-underline"
-                      >
-                        <LayoutColumns3 className="w-4 h-4 text-slate-400" />
-                        Dashboard
-                      </Link>
-
                       <Button
                         isDisabled={loggingOut}
                         onPress={() => {

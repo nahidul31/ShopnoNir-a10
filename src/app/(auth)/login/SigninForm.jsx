@@ -38,7 +38,7 @@ export default function SigninForm() {
     try {
       const { email, password } = formData;
 
-      const { data, error } = await authClient.signIn.email({
+      const { error } = await authClient.signIn.email({
         email,
         password,
         rememberMe,
@@ -74,15 +74,29 @@ export default function SigninForm() {
     }
   };
 
+  const HouseMark = ({ className }) => (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className={className}
+      stroke="white"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 10.5 12 3l9 7.5" />
+      <path d="M5.5 9.5V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V9.5" />
+      <path d="M10 21v-5.5a2 2 0 0 1 4 0V21" />
+    </svg>
+  );
+
   return (
-    <div className="flex min-h-screen w-full items-center justify-center border-b-4 border-[#C93B5B]/20 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)]">
+    <div className="flex min-h-screen w-full items-center justify-center border-b-4 border-[#A61C3C]/20 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)]">
       <div className="grid w-full min-h-screen lg:grid-cols-2 bg-white">
-        {/* =====================================================
-            LEFT SIDE
-        ====================================================== */}
+        {/* LEFT SIDE */}
         <div className="relative hidden overflow-hidden bg-gradient-to-br from-[#1a2236] via-[#111827] to-[#0a0f1a] lg:block">
-          <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#C93B5B]/20 blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#C93B5B]/10 blur-3xl" />
+          <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#A61C3C]/20 blur-3xl" />
+          <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#A61C3C]/10 blur-3xl" />
 
           <div
             className="absolute inset-0 opacity-[0.07]"
@@ -94,17 +108,14 @@ export default function SigninForm() {
           />
 
           <div className="relative flex h-full min-h-screen flex-col justify-between p-8 xl:p-12">
-            <Link href="/" className="flex w-fit items-center gap-2">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#C93B5B] shadow-lg shadow-[#C93B5B]/20">
-                <Icon
-                  icon="solar:home-2-bold"
-                  width="24"
-                  className="text-white"
-                />
+            <Link href="/" className="flex w-fit items-center gap-2.5">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#A61C3C] to-[#4A0E1A] shadow-lg shadow-[#A61C3C]/25">
+                <HouseMark className="h-6 w-6" />
               </div>
+
               <span className="text-2xl font-extrabold">
                 <span className="text-white">Shopno</span>
-                <span className="text-[#C93B5B]">Nir</span>
+                <span className="text-[#E8688A]">Nir</span>
               </span>
             </Link>
 
@@ -113,14 +124,14 @@ export default function SigninForm() {
                 <Icon
                   icon="solar:key-minimalistic-square-3-bold"
                   width="18"
-                  className="text-[#C93B5B]"
+                  className="text-[#E8688A]"
                 />
                 Welcome Back
               </div>
 
               <h1 className="text-3xl font-extrabold leading-tight text-white xl:text-5xl">
                 Pick up right
-                <span className="block text-[#C93B5B]">
+                <span className="block text-[#E8688A]">
                   where you left off.
                 </span>
               </h1>
@@ -132,11 +143,11 @@ export default function SigninForm() {
 
               <div className="mt-8 space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#C93B5B]/10">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#A61C3C]/15">
                     <Icon
                       icon="solar:bookmark-square-minimalistic-bold"
                       width="19"
-                      className="text-[#C93B5B]"
+                      className="text-[#E8688A]"
                     />
                   </div>
                   <span className="text-sm text-gray-300">
@@ -145,11 +156,11 @@ export default function SigninForm() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#C93B5B]/10">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#A61C3C]/15">
                     <Icon
                       icon="solar:calendar-mark-bold"
                       width="19"
-                      className="text-[#C93B5B]"
+                      className="text-[#E8688A]"
                     />
                   </div>
                   <span className="text-sm text-gray-300">
@@ -158,11 +169,11 @@ export default function SigninForm() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#C93B5B]/10">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#A61C3C]/15">
                     <Icon
                       icon="solar:chat-round-line-bold"
                       width="19"
-                      className="text-[#C93B5B]"
+                      className="text-[#E8688A]"
                     />
                   </div>
                   <span className="text-sm text-gray-300">
@@ -178,24 +189,19 @@ export default function SigninForm() {
           </div>
         </div>
 
-        {/* =====================================================
-            RIGHT SIDE
-        ====================================================== */}
+        {/* RIGHT SIDE */}
         <div className="flex items-center justify-center p-6 sm:p-10 lg:p-12">
           <div className="w-full max-w-lg">
             {/* Mobile Logo */}
             <div className="mb-8 lg:hidden">
-              <Link href="/" className="flex w-fit items-center gap-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#C93B5B]">
-                  <Icon
-                    icon="solar:home-2-bold"
-                    width="22"
-                    className="text-white"
-                  />
+              <Link href="/" className="flex w-fit items-center gap-2.5">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#A61C3C] to-[#4A0E1A]">
+                  <HouseMark className="h-5 w-5" />
                 </div>
+
                 <span className="text-2xl font-extrabold">
                   <span className="text-gray-900">Shopno</span>
-                  <span className="text-[#C93B5B]">Nir</span>
+                  <span className="text-[#A61C3C]">Nir</span>
                 </span>
               </Link>
             </div>
@@ -210,9 +216,7 @@ export default function SigninForm() {
               </p>
             </div>
 
-            {/* =================================================
-                FORM
-            ================================================== */}
+            {/* FORM */}
             <form onSubmit={handleSubmit} className="mt-8 space-y-6">
               {/* Email */}
               <div>
@@ -230,7 +234,7 @@ export default function SigninForm() {
                     onChange={handleChange}
                     placeholder="Enter your email"
                     required
-                    className="h-14 w-full rounded-lg border-2 border-gray-200 pl-12 pr-4 text-sm outline-none transition-colors hover:border-[#C93B5B]/50 focus:border-[#C93B5B]"
+                    className="h-14 w-full rounded-lg border-2 border-gray-200 pl-12 pr-4 text-sm outline-none transition-colors hover:border-[#A61C3C]/50 focus:border-[#A61C3C]"
                   />
                 </div>
               </div>
@@ -251,12 +255,12 @@ export default function SigninForm() {
                     onChange={handleChange}
                     placeholder="Enter your password"
                     required
-                    className="h-14 w-full rounded-lg border-2 border-gray-200 pl-12 pr-12 text-sm outline-none transition-colors hover:border-[#C93B5B]/50 focus:border-[#C93B5B]"
+                    className="h-14 w-full rounded-lg border-2 border-gray-200 pl-12 pr-12 text-sm outline-none transition-colors hover:border-[#A61C3C]/50 focus:border-[#A61C3C]"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 transition-colors hover:text-[#C93B5B]"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 transition-colors hover:text-[#A61C3C]"
                   >
                     <Icon
                       icon={
@@ -275,25 +279,16 @@ export default function SigninForm() {
                 <p className="text-sm font-medium text-red-500">{formError}</p>
               )}
 
-              {/* Remember me + Forgot password */}
-              <div className="flex items-center justify-between">
-                <label className="flex cursor-pointer items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 accent-[#C93B5B]"
-                  />
-                  <span className="text-sm text-gray-600">Remember me</span>
-                </label>
-
-                <Link
-                  href="/forgot-password"
-                  className="text-sm font-semibold text-[#C93B5B] hover:underline"
-                >
-                  Forgot password?
-                </Link>
-              </div>
+              {/* Remember me */}
+              <label className="flex w-fit cursor-pointer items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 accent-[#A61C3C]"
+                />
+                <span className="text-sm text-gray-600">Remember me</span>
+              </label>
 
               {/* Submit Button */}
               <Button
@@ -301,15 +296,13 @@ export default function SigninForm() {
                 size="lg"
                 radius="lg"
                 isDisabled={isSubmitting}
-                className="w-full bg-[#C93B5B] font-bold text-white shadow-lg shadow-[#C93B5B]/20 transition-all duration-300 hover:bg-[#B33250]"
+                className="w-full bg-gradient-to-r from-[#A61C3C] to-[#4A0E1A] font-bold text-white shadow-lg shadow-[#A61C3C]/25 transition-all duration-300 hover:opacity-95"
               >
                 {isSubmitting ? "Signing in..." : "Sign In"}
               </Button>
             </form>
 
-            {/* =================================================
-                OR DIVIDER
-            ================================================== */}
+            {/* OR */}
             <div className="my-7 flex items-center gap-4">
               <div className="h-px flex-1 bg-gray-200" />
               <span className="text-xs font-medium text-gray-400">OR</span>
@@ -334,7 +327,7 @@ export default function SigninForm() {
               Don&apos;t have an account?{" "}
               <Link
                 href="/register"
-                className="font-bold text-[#C93B5B] hover:underline"
+                className="font-bold text-[#A61C3C] hover:underline"
               >
                 Sign Up
               </Link>

@@ -9,7 +9,13 @@ const db = client.db();
 export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
-    minPasswordLength: 4, // ফর্মের সাথে মিলিয়ে ৪
+    minPasswordLength: 4,
+  },
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    },
   },
   user: {
     additionalFields: {
@@ -17,7 +23,7 @@ export const auth = betterAuth({
         type: "string",
         required: false,
         defaultValue: "tenant",
-        input: true, // সাইনআপের সময় এই ফিল্ড পাঠানো যাবে
+        input: true,
       },
     },
   },

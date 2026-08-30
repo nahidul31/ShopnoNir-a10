@@ -15,7 +15,7 @@ const propertyTypes = [
 ];
 const rentTypes = ["monthly", "weekly", "daily"];
 
-export default function EditPropertyModal({ property }) {
+export default function EditPropertyModal({ property, token }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +45,10 @@ export default function EditPropertyModal({ property }) {
         `${process.env.NEXT_PUBLIC_URL}/api/property/${property._id}`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({
             ...form,
             rent: Number(form.rent),

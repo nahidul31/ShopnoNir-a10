@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
 
-export default function PaymentSuccess({ sessionId }) {
+export default function PaymentSuccess({ sessionId, token }) {
   const [status, setStatus] = useState("verifying");
   const [transactionId, setTransactionId] = useState("");
 
@@ -23,7 +23,10 @@ export default function PaymentSuccess({ sessionId }) {
 
     fetch(`${process.env.NEXT_PUBLIC_URL}/api/verify-payment`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({
         sessionId,
         bookingDetails: JSON.parse(bookingDetails),
@@ -43,7 +46,7 @@ export default function PaymentSuccess({ sessionId }) {
         console.error(err);
         setStatus("error");
       });
-  }, [sessionId]);
+  }, [sessionId, token]);
 
   if (status === "verifying") {
     return (

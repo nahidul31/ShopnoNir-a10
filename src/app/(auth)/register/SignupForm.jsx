@@ -16,7 +16,6 @@ export default function SignupForm() {
 
   const initialFormData = {
     name: "",
-    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -64,7 +63,7 @@ export default function SignupForm() {
     try {
       const { name, email, password, role } = formData;
 
-      const { data, error } = await authClient.signUp.email({
+      const { error } = await authClient.signUp.email({
         name,
         email,
         password,
@@ -77,15 +76,11 @@ export default function SignupForm() {
         return;
       }
 
-      console.log("Signup successful:", data);
-
-      // Reset the form
       setFormData(initialFormData);
 
       // signUp.email auto-logs the user in — sign them back out
       await authClient.signOut();
 
-      // Send them to the sign-in page
       router.push("/login");
     } catch (error) {
       console.error("Signup error:", error);
@@ -95,14 +90,26 @@ export default function SignupForm() {
     }
   };
 
+  const handleGoogleSignUp = async () => {
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+    } catch (error) {
+      console.error("Google signup error:", error);
+      setPasswordError("Google sign-up failed. Please try again.");
+    }
+  };
+
   const inputClassNames = {
     label: "text-gray-700 font-medium",
     inputWrapper: [
       "px-4",
       "h-14",
       "border-2",
-      "data-[hover=true]:border-[#C93B5B]/50",
-      "group-data-[focus=true]:border-[#C93B5B]",
+      "data-[hover=true]:border-[#A61C3C]/50",
+      "group-data-[focus=true]:border-[#A61C3C]",
     ],
     input: "text-sm py-0",
   };
@@ -122,13 +129,29 @@ export default function SignupForm() {
     },
   ];
 
+  const HouseMark = ({ className }) => (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className={className}
+      stroke="white"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 10.5 12 3l9 7.5" />
+      <path d="M5.5 9.5V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V9.5" />
+      <path d="M10 21v-5.5a2 2 0 0 1 4 0V21" />
+    </svg>
+  );
+
   return (
-    <div className="flex min-h-screen w-full items-center justify-center border-b-4 border-[#C93B5B]/20 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)]">
+    <div className="flex min-h-screen w-full items-center justify-center border-b-4 border-[#A61C3C]/20 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)]">
       <div className="grid w-full min-h-screen lg:grid-cols-2 bg-white">
         {/* LEFT SIDE */}
         <div className="relative hidden overflow-hidden bg-gradient-to-br from-[#1a2236] via-[#111827] to-[#0a0f1a] lg:block">
-          <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#C93B5B]/20 blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#C93B5B]/10 blur-3xl" />
+          <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#A61C3C]/20 blur-3xl" />
+          <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#A61C3C]/10 blur-3xl" />
 
           <div
             className="absolute inset-0 opacity-[0.07]"
@@ -140,18 +163,14 @@ export default function SignupForm() {
           />
 
           <div className="relative flex h-full min-h-screen flex-col justify-between p-8 xl:p-12">
-            <Link href="/" className="flex w-fit items-center gap-2">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#C93B5B] shadow-lg shadow-[#C93B5B]/20">
-                <Icon
-                  icon="solar:home-2-bold"
-                  width="24"
-                  className="text-white"
-                />
+            <Link href="/" className="flex w-fit items-center gap-2.5">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#A61C3C] to-[#4A0E1A] shadow-lg shadow-[#A61C3C]/25">
+                <HouseMark className="h-6 w-6" />
               </div>
 
               <span className="text-2xl font-extrabold">
                 <span className="text-white">Shopno</span>
-                <span className="text-[#C93B5B]">Nir</span>
+                <span className="text-[#E8688A]">Nir</span>
               </span>
             </Link>
 
@@ -160,29 +179,29 @@ export default function SignupForm() {
                 <Icon
                   icon="solar:stars-bold"
                   width="18"
-                  className="text-[#C93B5B]"
+                  className="text-[#E8688A]"
                 />
                 Find Your Perfect Place
               </div>
 
               <h1 className="text-3xl font-extrabold leading-tight text-white xl:text-5xl">
                 Your next home
-                <span className="block text-[#C93B5B]">starts here.</span>
+                <span className="block text-[#E8688A]">starts here.</span>
               </h1>
 
               <p className="mt-5 text-base leading-7 text-gray-400">
-                Join HomeNest and discover a simpler way to find, rent, and
+                Join ShopnoNir and discover a simpler way to find, rent, and
                 manage properties. Whether you are looking for a home or listing
                 one, we have you covered.
               </p>
 
               <div className="mt-8 space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#C93B5B]/10">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#A61C3C]/15">
                     <Icon
                       icon="solar:verified-check-bold"
                       width="19"
-                      className="text-[#C93B5B]"
+                      className="text-[#E8688A]"
                     />
                   </div>
                   <span className="text-sm text-gray-300">
@@ -191,11 +210,11 @@ export default function SignupForm() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#C93B5B]/10">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#A61C3C]/15">
                     <Icon
                       icon="solar:shield-check-bold"
                       width="19"
-                      className="text-[#C93B5B]"
+                      className="text-[#E8688A]"
                     />
                   </div>
                   <span className="text-sm text-gray-300">
@@ -204,11 +223,11 @@ export default function SignupForm() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#C93B5B]/10">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#A61C3C]/15">
                     <Icon
                       icon="solar:hand-stars-bold"
                       width="19"
-                      className="text-[#C93B5B]"
+                      className="text-[#E8688A]"
                     />
                   </div>
                   <span className="text-sm text-gray-300">
@@ -219,7 +238,7 @@ export default function SignupForm() {
             </div>
 
             <p className="text-sm text-gray-500">
-              © {new Date().getFullYear()} HomeNest. All rights reserved.
+              © {new Date().getFullYear()} ShopnoNir. All rights reserved.
             </p>
           </div>
         </div>
@@ -229,18 +248,14 @@ export default function SignupForm() {
           <div className="w-full max-w-lg">
             {/* Mobile Logo */}
             <div className="mb-8 lg:hidden">
-              <Link href="/" className="flex w-fit items-center gap-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#C93B5B]">
-                  <Icon
-                    icon="solar:home-2-bold"
-                    width="22"
-                    className="text-white"
-                  />
+              <Link href="/" className="flex w-fit items-center gap-2.5">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#A61C3C] to-[#4A0E1A]">
+                  <HouseMark className="h-5 w-5" />
                 </div>
 
                 <span className="text-2xl font-extrabold">
-                  <span className="text-gray-900">Home</span>
-                  <span className="text-[#C93B5B]">Nest</span>
+                  <span className="text-gray-900">Shopno</span>
+                  <span className="text-[#A61C3C]">Nir</span>
                 </span>
               </Link>
             </div>
@@ -252,7 +267,7 @@ export default function SignupForm() {
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-gray-500">
-                Join HomeNest and start your property journey today.
+                Join ShopnoNir and start your property journey today.
               </p>
             </div>
 
@@ -263,27 +278,25 @@ export default function SignupForm() {
               suppressHydrationWarning
             >
               {/* Name */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <Input
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  label="Full Name"
-                  placeholder="Enter your full name"
-                  variant="bordered"
-                  radius="lg"
-                  size="lg"
-                  isRequired
-                  classNames={inputClassNames}
-                  startContent={
-                    <Icon
-                      icon="solar:user-bold"
-                      width="20"
-                      className="text-gray-400 shrink-0"
-                    />
-                  }
-                />
-              </div>
+              <Input
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                label="Full Name"
+                placeholder="Enter your full name"
+                variant="bordered"
+                radius="lg"
+                size="lg"
+                isRequired
+                classNames={inputClassNames}
+                startContent={
+                  <Icon
+                    icon="solar:user-bold"
+                    width="20"
+                    className="text-gray-400 shrink-0"
+                  />
+                }
+              />
 
               {/* Email */}
               <Input
@@ -329,20 +342,20 @@ export default function SignupForm() {
                         onClick={() => handleRoleSelect(value)}
                         className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3.5 text-left transition-all duration-200 cursor-pointer ${
                           selected
-                            ? "border-[#C93B5B] bg-[#C93B5B]/5"
+                            ? "border-[#A61C3C] bg-[#A61C3C]/5"
                             : "border-gray-200 bg-white hover:bg-gray-50"
                         }`}
                       >
                         <div
                           className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors ${
-                            selected ? "bg-[#C93B5B]/20" : "bg-gray-100"
+                            selected ? "bg-[#A61C3C]/15" : "bg-gray-100"
                           }`}
                         >
                           <Icon
                             icon={icon}
                             width="20"
                             className={
-                              selected ? "text-[#C93B5B]" : "text-gray-600"
+                              selected ? "text-[#A61C3C]" : "text-gray-600"
                             }
                           />
                         </div>
@@ -350,7 +363,7 @@ export default function SignupForm() {
                         <div>
                           <p
                             className={`text-sm font-semibold ${
-                              selected ? "text-[#C93B5B]" : "text-gray-800"
+                              selected ? "text-[#A61C3C]" : "text-gray-800"
                             }`}
                           >
                             {title}
@@ -362,7 +375,7 @@ export default function SignupForm() {
                         <span
                           className={`ml-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
                             selected
-                              ? "border-[#C93B5B] bg-[#C93B5B]"
+                              ? "border-[#A61C3C] bg-[#A61C3C]"
                               : "border-gray-300"
                           }`}
                         >
@@ -406,7 +419,7 @@ export default function SignupForm() {
                     <button
                       type="button"
                       onClick={() => setShowPassword((prev) => !prev)}
-                      className="cursor-pointer text-gray-400 transition-colors hover:text-[#C93B5B]"
+                      className="cursor-pointer text-gray-400 transition-colors hover:text-[#A61C3C]"
                     >
                       <Icon
                         icon={
@@ -445,7 +458,7 @@ export default function SignupForm() {
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword((prev) => !prev)}
-                      className="cursor-pointer text-gray-400 transition-colors hover:text-[#C93B5B]"
+                      className="cursor-pointer text-gray-400 transition-colors hover:text-[#A61C3C]"
                     >
                       <Icon
                         icon={
@@ -472,24 +485,18 @@ export default function SignupForm() {
                 <input
                   type="checkbox"
                   required
-                  className="mt-1 h-4 w-4 rounded border-gray-300 accent-[#C93B5B]"
+                  className="mt-1 h-4 w-4 rounded border-gray-300 accent-[#A61C3C]"
                 />
 
                 <span className="text-sm leading-6 text-gray-500">
                   I agree to the{" "}
-                  <Link
-                    href="/terms"
-                    className="font-semibold text-[#C93B5B] hover:underline"
-                  >
-                    Terms & Conditions
-                  </Link>{" "}
+                  <span className="font-semibold text-[#A61C3C]">
+                    Terms &amp; Conditions
+                  </span>{" "}
                   and{" "}
-                  <Link
-                    href="/privacy"
-                    className="font-semibold text-[#C93B5B] hover:underline"
-                  >
+                  <span className="font-semibold text-[#A61C3C]">
                     Privacy Policy
-                  </Link>
+                  </span>
                   .
                 </span>
               </label>
@@ -500,7 +507,7 @@ export default function SignupForm() {
                 size="lg"
                 radius="lg"
                 isDisabled={isSubmitting}
-                className="w-full bg-[#C93B5B] font-bold text-white shadow-lg shadow-[#C93B5B]/20 transition-all duration-300 hover:bg-[#B33250]"
+                className="w-full bg-gradient-to-r from-[#A61C3C] to-[#4A0E1A] font-bold text-white shadow-lg shadow-[#A61C3C]/25 transition-all duration-300 hover:opacity-95"
                 endContent={<Icon icon="solar:arrow-right-bold" width="20" />}
               >
                 {isSubmitting ? "Creating account..." : "Create Account"}
@@ -516,12 +523,29 @@ export default function SignupForm() {
               <div className="h-px flex-1 bg-gray-200" />
             </div>
 
+            {/* Google Sign Up */}
+            <Button
+              type="button"
+              onPress={handleGoogleSignUp}
+              size="lg"
+              radius="lg"
+              variant="bordered"
+              className="w-full border-2 border-gray-200 font-semibold text-gray-700 transition-all duration-200 hover:border-gray-300 hover:bg-gray-50"
+            >
+              <Icon icon="flat-color-icons:google" width="20" />
+              Continue with Google
+            </Button>
+
+            <p className="mt-3 text-center text-xs text-gray-400">
+              Google sign-up creates a tenant account by default.
+            </p>
+
             {/* Login */}
-            <p className="text-center text-sm text-gray-500">
+            <p className="mt-7 text-center text-sm text-gray-500">
               Already have an account?{" "}
               <Link
                 href="/login"
-                className="font-bold text-[#C93B5B] hover:underline"
+                className="font-bold text-[#A61C3C] hover:underline"
               >
                 Sign In
               </Link>

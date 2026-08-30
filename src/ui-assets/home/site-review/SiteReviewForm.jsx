@@ -26,7 +26,7 @@ function StarRating({ rating, onChange, size = 28 }) {
   );
 }
 
-export default function SiteReviewForm({ user }) {
+export default function SiteReviewForm({ user, token }) {
   const router = useRouter();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -55,7 +55,10 @@ export default function SiteReviewForm({ user }) {
         `${process.env.NEXT_PUBLIC_URL}/api/site-reviews`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({
             name: user.name,
             email: user.email,

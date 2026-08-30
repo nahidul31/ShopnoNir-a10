@@ -61,9 +61,9 @@ const PROPERTY_TYPES = [
   { key: "apartment", label: "Apartment" },
   { key: "house", label: "House" },
   { key: "villa", label: "Villa" },
+  { key: "room", label: "Room" },
+  { key: "studio", label: "Studio" },
   { key: "office", label: "Office Space" },
-  { key: "shop", label: "Shop / Commercial" },
-  { key: "land", label: "Land / Plot" },
 ];
 
 const RENT_TYPES = [
@@ -83,8 +83,8 @@ const AMENITIES = [
   { key: "furnished", label: "Furnished", icon: "gravity-ui:sofa" },
 ];
 
-export default function AddPropertyForm() {
-  const [formData, setFormData] = useState({
+export default function AddPropertyForm({ user }) {
+  const emptyForm = {
     title: "",
     description: "",
     location: "",
@@ -95,10 +95,12 @@ export default function AddPropertyForm() {
     bathrooms: "",
     size: "",
     extraFeatures: "",
-    ownerName: "",
+    ownerName: user?.name || "",
     ownerPhone: "",
-    ownerEmail: "",
-  });
+    ownerEmail: user?.email || "",
+  };
+
+  const [formData, setFormData] = useState(emptyForm);
 
   const [amenities, setAmenities] = useState([]);
 
@@ -225,6 +227,7 @@ export default function AddPropertyForm() {
         );
         toast.danger(`Image upload failed: ${err.message}`);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleImageUpload = (e) => {
@@ -300,6 +303,8 @@ export default function AddPropertyForm() {
     if (!formData.ownerName.trim()) next.ownerName = "Owner name is required";
     if (!formData.ownerPhone.trim())
       next.ownerPhone = "Owner phone is required";
+    if (!formData.ownerEmail.trim())
+      next.ownerEmail = "Owner email is required";
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -328,6 +333,9 @@ export default function AddPropertyForm() {
 
       const payload = {
         ...formData,
+        rent: Number(formData.rent),
+        bedrooms: Number(formData.bedrooms) || 0,
+        bathrooms: Number(formData.bathrooms) || 0,
         amenities,
         images: imageUrls,
         status: "pending",
@@ -336,24 +344,12 @@ export default function AddPropertyForm() {
       const result = await createNewProperty(payload);
 
       if (result?.insertedId) {
-        toast.success("Property added successfully");
+        toast.success("Property added successfully", {
+          description: "It will appear publicly once an admin approves it.",
+        });
 
         // reset form after a successful submission
-        setFormData({
-          title: "",
-          description: "",
-          location: "",
-          propertyType: "",
-          rent: "",
-          rentType: "",
-          bedrooms: "",
-          bathrooms: "",
-          size: "",
-          extraFeatures: "",
-          ownerName: "",
-          ownerPhone: "",
-          ownerEmail: "",
-        });
+        setFormData(emptyForm);
         setAmenities([]);
         images.forEach((img) => URL.revokeObjectURL(img.previewUrl));
         setImages([]);
@@ -569,7 +565,7 @@ export default function AddPropertyForm() {
           </div>
         </Section>
 
-        {/* Images — imgbb powered upload ----------------------------------------------*/}
+        {/* Images — imgbb powered upload */}
         <Section icon="gravity-ui:picture" title="Images">
           <label
             htmlFor="property-images"
@@ -700,15 +696,25 @@ export default function AddPropertyForm() {
               />
             </Field>
             <div className="sm:col-span-2">
-              <Field label="Email Address" icon="gravity-ui:envelope">
+              <Field
+                label="Email Address"
+                required
+                error={errors.ownerEmail}
+                icon="gravity-ui:envelope"
+              >
                 <input
                   type="email"
                   className={fieldWithIconClass}
                   placeholder="owner@example.com"
                   value={formData.ownerEmail}
                   onChange={(e) => handleChange("ownerEmail")(e.target.value)}
+                  required
                 />
               </Field>
+              <p className="mt-1.5 text-xs text-neutral-400">
+                This email links the property to your dashboard. Keep it as your
+                account email.
+              </p>
             </div>
           </div>
         </Section>
@@ -724,14 +730,6 @@ export default function AddPropertyForm() {
             by an admin.
           </p>
           <div className="flex w-full gap-3 sm:w-auto">
-            <Button
-              variant="flat"
-              color="default"
-              type="button"
-              className="flex-1 sm:flex-none"
-            >
-              Save as Draft
-            </Button>
             <Button
               type="submit"
               isLoading={submitting}

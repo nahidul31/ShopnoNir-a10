@@ -1,5 +1,7 @@
-import { getServerSession } from "@/lib/action/get-server-session";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { getServerSession } from "@/lib/action/get-server-session";
 import PaymentForm from "@/ui-assets/payment/PaymentForm";
 
 async function getProperty(id) {
@@ -20,6 +22,10 @@ export default async function PaymentPage({ searchParams }) {
   if (!user) {
     redirect("/login");
   }
+
+  const tokenData = await auth.api.getToken({
+    headers: await headers(),
+  });
 
   const property = params?.propertyId
     ? await getProperty(params.propertyId)
@@ -114,9 +120,12 @@ export default async function PaymentPage({ searchParams }) {
           </div>
         </div>
 
-        {/* Card form */}
+        {/* Payment */}
         <div className="lg:col-span-2 order-1 lg:order-2">
-          <PaymentForm bookingDetails={bookingDetails} />
+          <PaymentForm
+            bookingDetails={bookingDetails}
+            token={tokenData?.token}
+          />
         </div>
       </div>
     </div>

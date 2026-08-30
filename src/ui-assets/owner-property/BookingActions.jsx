@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button, Tooltip, toast } from "@heroui/react";
 import { Icon } from "@iconify/react";
 
-export default function BookingActions({ booking }) {
+export default function BookingActions({ booking, token }) {
   const router = useRouter();
   const [updating, setUpdating] = useState(false);
 
@@ -17,7 +17,10 @@ export default function BookingActions({ booking }) {
         `${process.env.NEXT_PUBLIC_URL}/api/bookings/${booking._id}`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({ status: newStatus }),
         },
       );

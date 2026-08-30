@@ -4,21 +4,24 @@ import { useState } from "react";
 import { toast } from "@heroui/react";
 import { Icon } from "@iconify/react";
 
-export default function PaymentForm({ bookingDetails }) {
+export default function PaymentForm({ bookingDetails, token }) {
   const [loading, setLoading] = useState(false);
 
   const handleCheckout = async () => {
     setLoading(true);
 
     try {
-      // booking details
+      // booking details সেভ করে রাখা, success পেজে লাগবে
       sessionStorage.setItem("pendingBooking", JSON.stringify(bookingDetails));
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_URL}/api/create-checkout-session`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({ bookingDetails }),
         },
       );
@@ -27,7 +30,7 @@ export default function PaymentForm({ bookingDetails }) {
 
       if (!data.url) throw new Error("Could not start checkout");
 
-      // Stripe
+      // Stripe এর নিজস্ব পেজে পাঠানো
       window.location.href = data.url;
     } catch (err) {
       console.error(err);

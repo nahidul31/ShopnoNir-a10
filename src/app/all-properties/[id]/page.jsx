@@ -1,5 +1,7 @@
+import { headers } from "next/headers";
 import { Icon } from "@iconify/react";
 import { Chip } from "@heroui/react";
+import { auth } from "@/lib/auth";
 import { getServerSession } from "@/lib/action/get-server-session";
 import FavoriteButton from "@/ui-assets/property-details/FavoriteButton";
 import BookingModal from "@/ui-assets/property-details/BookingModal";
@@ -46,6 +48,12 @@ export default async function PropertyDetailsPage({ params }) {
   const session = await getServerSession();
   const user = session?.user || null;
 
+  const tokenData = session
+    ? await auth.api.getToken({ headers: await headers() })
+    : null;
+
+  const token = tokenData?.token;
+
   const property = await getProperty(id);
 
   if (!property) {
@@ -60,7 +68,8 @@ export default async function PropertyDetailsPage({ params }) {
           Property not found
         </h2>
         <p className="text-default-400 text-sm mt-1">
-          The property you're looking for doesn't exist or was removed.
+          The property you&apos;re looking for doesn&apos;t exist or was
+          removed.
         </p>
       </div>
     );
@@ -242,7 +251,11 @@ export default async function PropertyDetailsPage({ params }) {
           </div>
 
           {/* Reviews */}
-          <PropertyReviews propertyId={property._id} user={user} />
+          <PropertyReviews
+            propertyId={property._id}
+            user={user}
+            token={token}
+          />
         </div>
 
         {/* Right: sticky booking card */}
@@ -257,9 +270,9 @@ export default async function PropertyDetailsPage({ params }) {
               </span>
             </div>
 
-            <BookingModal property={property} user={user} />
+            <BookingModal property={property} user={user} token={token} />
 
-            <FavoriteButton property={property} user={user} />
+            <FavoriteButton property={property} user={user} token={token} />
 
             <div className="mt-6 space-y-2">
               <p className="flex items-center gap-2 text-sm text-default-500">
