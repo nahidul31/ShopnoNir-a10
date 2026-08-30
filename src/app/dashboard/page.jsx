@@ -3,19 +3,13 @@ import { getServerSession } from "@/lib/action/get-server-session";
 
 const DashboardMainPage = async () => {
   const session = await getServerSession();
-  const email = session?.user?.email;
 
-  if (!email) redirect("/login");
+  if (!session) redirect("/login");
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_URL}/api/users?email=${email}`,
-    { cache: "no-store" },
-  );
+  const role = session.user?.role;
 
-  const user = await res.json();
-
-  if (user?.role === "admin") redirect("/dashboard/admin");
-  if (user?.role === "owner") redirect("/dashboard/owner");
+  if (role === "admin") redirect("/dashboard/admin");
+  if (role === "owner") redirect("/dashboard/owner");
 
   redirect("/dashboard/tenant");
 };

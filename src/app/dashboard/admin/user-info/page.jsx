@@ -1,6 +1,8 @@
+import { headers } from "next/headers";
 import { Icon } from "@iconify/react";
 import { Chip } from "@heroui/react";
 import RoleSelect from "./RoleSelect";
+import { auth } from "@/lib/auth";
 import { getServerSession } from "@/lib/action/get-server-session";
 
 const roleColorMap = {
@@ -9,8 +11,9 @@ const roleColorMap = {
   admin: "success",
 };
 
-async function getUsers() {
+async function getUsers(token) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/users`, {
+    headers: { authorization: `Bearer ${token}` },
     cache: "no-store",
   });
 
@@ -22,8 +25,18 @@ async function getUsers() {
 }
 
 export default async function ManageUsers() {
-  const users = await getUsers();
   const session = await getServerSession();
+
+  if (!session) {
+    return <div className="p-6 text-center">Please login first</div>;
+  }
+
+  const tokenData = await auth.api.getToken({
+    headers: await headers(),
+  });
+
+  const token = tokenData?.token;
+  const users = await getUsers(token);
   const currentUserEmail = session?.user?.email;
 
   if (users.length === 0) {
@@ -134,6 +147,7 @@ export default async function ManageUsers() {
                         userId={user._id}
                         currentRole={user.role}
                         disabled={isMe}
+                        token={token}
                       />
                     </td>
                   </tr>
