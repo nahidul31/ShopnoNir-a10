@@ -46,7 +46,7 @@ function buildMonths() {
   return months;
 }
 
-export default function AdminAnalytics() {
+export default function AdminAnalytics({ token }) {
   const [users, setUsers] = useState([]);
   const [properties, setProperties] = useState([]);
   const [bookings, setBookings] = useState([]);
@@ -57,20 +57,19 @@ export default function AdminAnalytics() {
     const load = async () => {
       try {
         const base = process.env.NEXT_PUBLIC_URL;
+        const authHeaders = { authorization: `Bearer ${token}` };
 
         const [userRes, propRes, bookRes, txnRes] = await Promise.all([
-          fetch(`${base}/api/users`),
+          fetch(`${base}/api/users`, { headers: authHeaders }),
           fetch(`${base}/api/property`),
-          fetch(`${base}/api/bookings`),
-          fetch(`${base}/api/transactions`),
+          fetch(`${base}/api/bookings`, { headers: authHeaders }),
+          fetch(`${base}/api/transactions`, { headers: authHeaders }),
         ]);
 
-        const [userData, propData, bookData, txnData] = await Promise.all([
-          userRes.json(),
-          propRes.json(),
-          bookRes.json(),
-          txnRes.json(),
-        ]);
+        const userData = userRes.ok ? await userRes.json() : [];
+        const propData = propRes.ok ? await propRes.json() : [];
+        const bookData = bookRes.ok ? await bookRes.json() : [];
+        const txnData = txnRes.ok ? await txnRes.json() : [];
 
         setUsers(Array.isArray(userData) ? userData : []);
         setProperties(Array.isArray(propData) ? propData : []);
@@ -84,9 +83,8 @@ export default function AdminAnalytics() {
     };
 
     load();
-  }, []);
+  }, [token]);
 
-  //
   const totalRevenue = transactions.reduce(
     (sum, t) => sum + (Number(t.amount) || 0),
     0,
@@ -121,7 +119,11 @@ export default function AdminAnalytics() {
   })();
 
   if (loading) {
-    return <p className="text-sm text-default-400">Loading...</p>;
+    return (
+      <div className="p-6 sm:p-8">
+        <p className="text-sm text-default-400">Loading...</p>
+      </div>
+    );
   }
 
   return (

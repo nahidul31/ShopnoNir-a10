@@ -38,7 +38,6 @@ function buildMonths() {
     months.push({
       key: `${d.getFullYear()}-${d.getMonth()}`,
       month: d.toLocaleDateString("en-US", { month: "short" }),
-      year: d.getFullYear(),
       earnings: 0,
     });
   }
@@ -46,7 +45,7 @@ function buildMonths() {
   return months;
 }
 
-export default function OwnerAnalytics({ user }) {
+export default function OwnerAnalytics({ user, token }) {
   const [properties, setProperties] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [transactions, setTransactions] = useState([]);
@@ -61,18 +60,21 @@ export default function OwnerAnalytics({ user }) {
     const load = async () => {
       try {
         const base = process.env.NEXT_PUBLIC_URL;
+        const authHeaders = { authorization: `Bearer ${token}` };
 
         const [propRes, bookRes, txnRes] = await Promise.all([
           fetch(`${base}/api/property?ownerEmail=${user.email}`),
-          fetch(`${base}/api/bookings?ownerEmail=${user.email}`),
-          fetch(`${base}/api/transactions?ownerEmail=${user.email}`),
+          fetch(`${base}/api/bookings?ownerEmail=${user.email}`, {
+            headers: authHeaders,
+          }),
+          fetch(`${base}/api/transactions?ownerEmail=${user.email}`, {
+            headers: authHeaders,
+          }),
         ]);
 
-        const [propData, bookData, txnData] = await Promise.all([
-          propRes.json(),
-          bookRes.json(),
-          txnRes.json(),
-        ]);
+        const propData = propRes.ok ? await propRes.json() : [];
+        const bookData = bookRes.ok ? await bookRes.json() : [];
+        const txnData = txnRes.ok ? await txnRes.json() : [];
 
         setProperties(Array.isArray(propData) ? propData : []);
         setBookings(Array.isArray(bookData) ? bookData : []);
@@ -85,17 +87,20 @@ export default function OwnerAnalytics({ user }) {
     };
 
     load();
-  }, [user?.email]);
+  }, [user?.email, token]);
 
+  // মোট আয় — সব successful payment এর যোগফল
   const totalEarnings = transactions.reduce(
     (sum, t) => sum + (Number(t.amount) || 0),
     0,
   );
 
+  // confirmed booking — owner যেগুলো approve করেছে
   const confirmedBookings = bookings.filter(
     (b) => b.status === "approved",
   ).length;
 
+  // মাসভিত্তিক আয়
   const chartData = (() => {
     const months = buildMonths();
 
@@ -113,12 +118,16 @@ export default function OwnerAnalytics({ user }) {
   })();
 
   if (loading) {
-    return <p className="text-sm text-default-400">Loading...</p>;
+    return (
+      <div className="p-6 sm:p-8">
+        <p className="text-sm text-default-400">Loading...</p>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <div className="p-6 sm:p-8">
+    <div className="p-6 sm:p-8">
+      <div className="mb-8">
         <h1 className="text-2xl font-bold text-default-900">Overview</h1>
         <p className="text-default-500 text-sm mt-1">
           Your earnings and activity at a glance
@@ -130,7 +139,7 @@ export default function OwnerAnalytics({ user }) {
         <SummaryCard
           icon="solar:wallet-money-bold"
           label="Total Earnings"
-          value={`$${totalEarnings.toLocaleString()}`}
+          value={`৳${totalEarnings.toLocaleString()}`}
           accent="bg-gradient-to-br from-[#A61C3C] to-[#4A0E1A]"
         />
 
@@ -179,7 +188,7 @@ export default function OwnerAnalytics({ user }) {
 
               <Tooltip
                 formatter={(value) => [
-                  `$${value.toLocaleString()}`,
+                  `৳${value.toLocaleString()}`,
                   "Earnings",
                 ]}
                 contentStyle={{
